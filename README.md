@@ -1,126 +1,175 @@
-# fabric-rofi
+Here is your updated `README.md`, now including the new **Telos automation script** system built around Fabric + Rofi + Habitica.
 
-**fabric-rofi** is a universal launcher that integrates [Fabric](https://github.com/danielmiessler/fabric) (the AI CLI) with [rofi](https://github.com/davatorium/rofi) to provide a seamless, hotkey-driven workflow for invoking AI patterns on text, code, logs, URLs, or clipboard content. Outputs are saved to Markdown files, optionally copied to clipboard, and can be opened automatically in your editor.
+---
+
+````markdown
+# fabric-rofi + telos-fabric
+
+**fabric-rofi** is a universal launcher that integrates [Fabric](https://github.com/danielmiessler/fabric) (the AI CLI) with [rofi](https://github.com/davatorium/rofi).  
+**telos-fabric** builds on top of it to automate your entire life context, using the [TELOS](https://github.com/danielmiessler/Telos) method and Fabric AI patterns.  
+This system is designed for self-reflection, life engineering, habit sync, and personal OS design — all via hotkey.
 
 ---
 
 ## 🔧 Features
 
-- **Dynamic pattern discovery**: Automatically lists all installed Fabric patterns.
-- **Versatile input modes**:
+### 🔹 fabric-rofi
 
-  - **None**: Run patterns without extra input.
-  - **URL**: Fetch and process web resources (e.g., YouTube transcripts).
-  - **File**: Analyze local files (logs, code, documents).
-  - **Clipboard/Text**: Quickly process clipboard content or manual text.
+- **Dynamic pattern discovery** from your Fabric config
+- Run AI tools on:
+  - Local files (logs, code)
+  - Clipboard or manual text
+  - URLs (e.g. YouTube)
+- Inline message injection before execution
+- Custom filename prompts
+- Markdown outputs, clipboard integration, desktop notification
+- Works with any Fabric pattern
 
-- **Inline prompt**: Add a quick message or instruction before the main input.
-- **Custom filename**: Specify your own output filename or use timestamped defaults.
-- **Flexible outputs**:
+### 🔹 telos-fabric
 
-  - Save results as Markdown in `~/fabric-outputs` (default).
-  - Copy output to clipboard.
-  - Send desktop notifications when done.
-  - Open the result in your preferred editor.
-
-- **Fallbacks**: Gracefully handles missing dependencies (`zenity`, `notify-send`).
+- **Auto-creates Fabric patterns** (`telos_bullet`, `telos_section`, `telos_pentest`)
+- Adds structured bullets to your Telos markdown file
+- Writes to correct section (`PROBLEMS`, `GOALS`, etc.)
+- Creates full sections via AI
+- Runs **Life Pentest** (self-audit), stores reports in dated folder
+- Extracts 3-line summary from Pentest into `Summaries` section
+- **Syncs goals to Habitica** every Friday with cron
 
 ---
 
 ## 🚀 Prerequisites
 
 - **Bash** (>= 4.0)
-- **Fabric** CLI (`fabric` in your `$PATH`)
+- **Fabric CLI** (`pip install fabric-ai`)
 - **rofi**
-- **xclip** (for clipboard integration)
-- **notify-send** (optional, for desktop notifications)
-- **zenity** (optional, for progress spinner)
+- **xclip**, **notify-send**, **zenity** (optional)
+- **curl** (for Habitica API sync)
 
 ---
 
 ## ⚙️ Installation
 
-1. **Copy the script** to your local bin:
+1. Install Fabric CLI:
 
    ```bash
-   curl -Lo ~/.local/bin/fabric-rofi \
-     https://raw.githubusercontent.com/<your-user>/<your-repo>/main/fabric-rofi
+   pip install fabric-ai
+   ```
+````
+
+2. Clone or copy the `fabric-rofi` and `telos-fabric.sh` scripts into your `~/.local/bin` and make them executable:
+
+   ```bash
    chmod +x ~/.local/bin/fabric-rofi
+   chmod +x ~/.local/bin/telos-fabric.sh
    ```
 
-2. **Ensure** `~/.local/bin` is in your `PATH`.
-3. **Bind** to a hotkey in your WM (i3 example):
+3. Add keybind in your WM (i3 example):
 
    ```conf
    bindsym $mod+Shift+f exec --no-startup-id ~/.local/bin/fabric-rofi
+   bindsym $mod+Shift+t exec --no-startup-id ~/.local/bin/telos-fabric.sh
+   ```
+
+4. Set up the cron job (optional):
+
+   ```bash
+   crontab -e
+   ```
+
+   Add this to run Habitica sync every Friday at 08:00:
+
+   ```cron
+   0 8 * * 5 ~/.local/bin/telos-fabric.sh --habitica
    ```
 
 ---
 
-## 💡 Usage
+## 💡 fabric-rofi Usage
 
 ```bash
 fabric-rofi [options]
 ```
 
-### Options
-
-| Flag                 | Description                                                            |
-| -------------------- | ---------------------------------------------------------------------- |
-| `-h`, `--help`       | Show help and exit.                                                    |
-| `-e`, `--editor`     | Set the editor to open outputs (default: `$EDITOR` or `nvim`).         |
-| `-o`, `--output-dir` | Set custom directory for saving outputs (default: `~/fabric-outputs`). |
+Choose input method, pattern, and message inline.
 
 ---
 
-## 📋 Workflow
+## 💡 telos-fabric Usage
 
-1. **Launch** `fabric-rofi` (via hotkey or terminal).
-2. **Select** a Fabric pattern from the rofi menu.
-3. **Choose** an input mode (None, URL, File, Clipboard/Text).
-4. **Enter** the required input (URL, file path, or text).
-5. _(Optional)_ **Type** a quick inline message to refine the prompt.
-6. _(Optional)_ **Specify** a custom output filename.
-7. **Decide** whether to copy to clipboard and/or send a notification.
-8. **View** the progress spinner (if `zenity` is installed).
-9. **Open** the resulting Markdown file in your editor.
+```bash
+telos-fabric.sh
+```
 
----
+You'll get a rofi prompt to:
 
-## 📦 Example
-
-1. **Summarize a YouTube lecture**:
-
-   ```bash
-   # Press Mod+Shift+f, choose "summarize_video", URL mode, paste link
-   ```
-
-2. **Analyze a log file**:
-
-   ```bash
-   # Hotkey → select "analyze_logs", File mode → choose /var/log/syslog
-   ```
-
-3. **Improve a prompt**:
-
-   ```bash
-   # Hotkey → select "improve_prompt", Clipboard/Text mode (clipboard auto-pastes)
-   ```
+- 📌 Add Bullet (to correct section)
+- 📄 Add Section (from title)
+- 🛡️ Run Life Pentest (and save reports)
+- 🔁 Sync to Habitica (`--habitica`)
 
 ---
 
-## 🛠️ Customization
+## 🗂 Directory Structure
 
-- **Plugins**: Extend with your own Fabric patterns in `~/.config/fabric/patterns/`.
-- **UI**: Swap `rofi` for `dmenu`, or replace `zenity` with another notifier.
-- **Post-processing**: Hook into your PKM system by watching the output directory.
+| File/Folder                                   | Purpose                     |
+| --------------------------------------------- | --------------------------- |
+| `~/Notes/second_brain/Telos_me.md`            | Your main TELOS file        |
+| `~/Notes/second_brain/telos-pentest-reports/` | Saved life pentests         |
+| `~/.config/fabric/patterns/`                  | Fabric AI pattern directory |
+
+---
+
+## 🌟 Example Workflows
+
+### 1. Add Thought to "Challenges"
+
+```bash
+# Hotkey -> Add Bullet -> Input: "I keep comparing myself"
+# Choose section: CHALLENGES
+```
+
+Will add:
+
+```markdown
+## CHALLENGES
+
+- I often compare my progress to others, which triggers self-doubt...
+```
+
+### 2. Run a Pentest
+
+```bash
+# Hotkey -> Run Pentest
+```
+
+Will:
+
+- Analyze your full `Telos_me.md`
+- Save detailed feedback to `telos-pentest-reports/YYYY-MM-DD_HH-MM.md`
+- Add a 3-line summary under `## Summaries`
+
+### 3. Sync to Habitica
+
+```bash
+telos-fabric.sh --habitica
+```
+
+Pushes top 10 goals as Habitica todos via API.
+
+---
+
+## 🔧 Customization Ideas
+
+- Add new patterns: `telos_goal`, `telos_value`, `telos_reflect`
+- Pipe daily logs into Obsidian
+- Extend with dmenu/wayland/tui support
+- Track bullet usage by time/section
+- Sync AI-generated tasks into your calendar
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repo.
-2. Create your feature branch: `git checkout -b feature/awesome`
-3. Commit your changes: `git commit -m 'Add awesome feature'`
-4. Push to the branch: `git push origin feature/awesome`
-5. Open a pull request.
+Want to expand this into a full life OS? PRs and ideas are welcome.
+
+---
