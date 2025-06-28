@@ -1,8 +1,3 @@
-Here is your updated `README.md`, now including the new **Telos automation script** system built around Fabric + Rofi + Habitica.
-
----
-
-````markdown
 # fabric-rofi + telos-fabric
 
 **fabric-rofi** is a universal launcher that integrates [Fabric](https://github.com/danielmiessler/fabric) (the AI CLI) with [rofi](https://github.com/davatorium/rofi).  
@@ -51,10 +46,9 @@ This system is designed for self-reflection, life engineering, habit sync, and p
 
 1. Install Fabric CLI:
 
-   ```bash
+```bash
    pip install fabric-ai
-   ```
-````
+```
 
 2. Clone or copy the `fabric-rofi` and `telos-fabric.sh` scripts into your `~/.local/bin` and make them executable:
 
